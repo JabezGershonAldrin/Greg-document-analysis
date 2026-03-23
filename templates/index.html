@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>GREG - Document Analyzer</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f6f8fb;
+padding:40px;
+}
+
+.upload{
+border:2px dashed #3b82f6;
+padding:40px;
+text-align:center;
+border-radius:12px;
+background:white;
+}
+
+table{
+width:100%;
+margin-top:30px;
+background:white;
+border-radius:10px;
+}
+
+th,td{
+padding:10px;
+text-align:left;
+}
+
+button{
+background:#16a34a;
+color:white;
+padding:10px 20px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>GREG - Document Analyzer</h2>
+
+<div class="upload">
+<input type="file" id="file">
+<button onclick="upload()">Upload</button>
+</div>
+
+<table id="results">
+<thead>
+<tr>
+<th>File</th>
+<th>Name of Document</th>
+<th>No. of Pages</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<br>
+
+<button onclick="download()">Download Excel</button>
+
+<script>
+
+async function upload(){
+
+let file = document.getElementById("file").files[0];
+
+let formData = new FormData();
+formData.append("file", file);
+
+let res = await fetch("/upload",{
+method:"POST",
+body:formData
+});
+
+let data = await res.json();
+
+let table = document.querySelector("#results tbody");
+table.innerHTML="";
+
+data.results.forEach(r=>{
+
+let row = table.insertRow();
+
+row.insertCell(0).innerText = r.File;
+row.insertCell(1).innerText = r["Name of Document"];
+row.insertCell(2).innerText = r["No. of Pages"];
+
+});
+
+}
+
+function download(){
+window.location="/download"
+}
+
+</script>
+
+</body>
+</html>
